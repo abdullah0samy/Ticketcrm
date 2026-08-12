@@ -1,0 +1,19 @@
+Django==5.0.9
+djangorestframework
+django-cors-headers
+django-filter
+django-better-admin-arrayfield
+django-admin-sortable2
+django-solo
+drf-yasg
+drf-yasg-examples
+psycopg2-binary
+django-model-utils
+django-extensions
+phonenumbers
+requests
+Pillow
+gunicorn
+uvicorn
+# Used by the survey dashboard to aggregate category scores.
+pandas

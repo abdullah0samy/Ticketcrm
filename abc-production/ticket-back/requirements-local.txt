@@ -1,0 +1,61 @@
+# Local development variant of requirements.txt (NuzulTech).
+# The original file is left untouched; this one only differs where the
+# original cannot install on a modern local machine:
+#
+#   * psycopg2  -> psycopg2-binary   (source build needs pg_config + a C compiler)
+#   * channels  -> >=4              (the pin `channels==3.0.0` is from 2020 and
+#                                    conflicts with the unpinned daphne 4.x and
+#                                    djangochannelsrestframework, both of which
+#                                    require channels>=4)
+#   * django-rest-swagger removed    (abandoned since 2018, incompatible with
+#                                    DRF/Django 5; only drf-yasg is actually used)
+#
+# Everything else matches requirements.txt.
+
+asgiref
+daphne
+uvicorn
+Django==5.0.9
+django-cors-headers
+django-import-export
+# Pinned: 1.x adds a `restored_at` column to SoftDeleteModel, but no migration in
+# this project ever creates it -> every Ticket query fails with
+# "column ticket_ticket.restored_at does not exist". 0.9.21 matches the migrations
+# (and therefore what production is actually running).
+django-soft-delete==0.9.21
+django-storages
+djangorestframework
+Pillow
+pytz
+sqlparse
+gunicorn
+cryptography
+dj-database-url
+whitenoise
+django-simple-history
+pandas
+sqlalchemy
+django-celery-beat
+django-redis
+hiredis
+channels>=4
+channels-redis
+djangochannelsrestframework
+django-extensions
+Werkzeug
+boto3
+phonenumbers
+qrcode
+fcm-django
+firebase-admin
+psycopg2-binary
+django-model-utils
+drf-yasg
+drf-yasg-examples
+twilio
+nested-multipart-parser
+django-better-admin-arrayfield
+django-mptt
+django-admin-sortable2
+django-solo
+django-filter

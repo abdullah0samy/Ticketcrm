@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>خطة تطوير منصة التذاكر — NuzulTech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B2A45; --navy:#0E3A5F; --teal:#0E8C8B; --teal-2:#12A6A0; --teal-3:#17B3AD;
+    --soft:#EEF5F6; --soft-2:#E3EEF0; --line:#D9E4E8; --text:#243642; --muted:#5F7280;
+    --danger:#D64545; --warn:#DE8A2C; --ok:#2E9E6B; --gold:#C9A24B;
+    --page-pad-x:16mm; --page-pad-y:15mm;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#5a6672;font-family:'Tajawal','Segoe UI',Tahoma,Arial,sans-serif;color:var(--text);-webkit-font-smoothing:antialiased}
+  body{padding:24px 0}
+
+  /* ---- Help bar (screen only) ---- */
+  .helpbar{max-width:210mm;margin:0 auto 20px;background:#0B2A45;color:#cfe3e6;border-radius:10px;padding:12px 18px;font-size:13px;line-height:1.7;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  .helpbar b{color:#fff}
+  .helpbar .k{background:#17B3AD;color:#04262b;padding:1px 8px;border-radius:5px;font-weight:700}
+
+  /* ---- Page ---- */
+  .page{
+    position:relative;width:210mm;height:297mm;margin:0 auto 20px;background:#fff;
+    padding:var(--page-pad-y) var(--page-pad-x);overflow:hidden;
+    box-shadow:0 8px 30px rgba(0,0,0,.28);
+  }
+  .page.pad0{padding:0}
+
+  /* ---- Running header / footer ---- */
+  .rh{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--soft-2);padding-bottom:7px;margin-bottom:14px}
+  .rh .brand{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--navy);font-size:12.5px}
+  .rh .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--teal-2)}
+  .rh .tag{font-size:10.5px;color:var(--muted);font-weight:500}
+  .rf{position:absolute;left:var(--page-pad-x);right:var(--page-pad-x);bottom:9mm;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--muted);border-top:1px solid var(--line);padding-top:6px}
+  .rf .pill{color:var(--teal);font-weight:700}
+
+  /* ---- Typo ---- */
+  h1.sec{font-size:21px;color:var(--navy);font-weight:800;line-height:1.25;margin-bottom:3px}
+  .kick{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.5px;color:var(--teal);background:var(--soft);border:1px solid var(--soft-2);padding:3px 10px;border-radius:20px;margin-bottom:9px}
+  h2.blk{font-size:14.5px;color:var(--ink);font-weight:800;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+  h2.blk::before{content:"";width:5px;height:17px;border-radius:3px;background:linear-gradient(var(--teal-2),var(--teal))}
+  p{font-size:12px;line-height:1.75;color:var(--text)}
+  .lead{font-size:12.5px;line-height:1.85;color:#33454f}
+  .muted{color:var(--muted)}
+  strong{color:var(--ink);font-weight:700}
+
+  /* ---- Chips / lists ---- */
+  ul.clean{list-style:none;margin:6px 0}
+  ul.clean li{position:relative;padding:4px 20px 4px 0;font-size:11.7px;line-height:1.6}
+  ul.clean li::before{content:"";position:absolute;right:2px;top:10px;width:7px;height:7px;border-radius:2px;background:var(--teal-2)}
+  ul.check li::before{content:"✔";background:none;color:var(--ok);font-size:12px;top:4px;right:0;width:auto;height:auto}
+  ul.x li::before{content:"✕";background:none;color:var(--danger);font-weight:800;font-size:12px;top:4px;right:0;width:auto;height:auto}
+
+  /* ---- Tables ---- */
+  table{width:100%;border-collapse:collapse;margin:6px 0;font-size:11px}
+  th{background:var(--navy);color:#fff;font-weight:700;text-align:right;padding:7px 9px;font-size:11px}
+  th:first-child{border-radius:0 7px 0 0}th:last-child{border-radius:7px 0 0 0}
+  td{padding:6px 9px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.55}
+  tr:nth-child(even) td{background:#F6FAFB}
+  .tag-c{display:inline-block;padding:1px 8px;border-radius:12px;font-size:9.5px;font-weight:700;white-space:nowrap}
+  .c-red{background:#FBE7E7;color:#B4302F}.c-org{background:#FBEEDD;color:#A96517}.c-yel{background:#FBF5DD;color:#8A6D13}.c-grn{background:#DFF3E8;color:#1E7A4E}.c-blu{background:#E1EEF5;color:#1E5A82}
+
+  /* ---- Cards grid ---- */
+  .grid{display:grid;gap:9px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
+  .card{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+  .card.soft{background:var(--soft)}
+  .card h3{font-size:12px;color:var(--navy);font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+  .card p,.card li{font-size:10.8px;line-height:1.55}
+  .card .num{font-size:9px;font-weight:800;color:#fff;background:var(--teal);width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+  .badge{display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px}
+  .b-arch{background:#E7EEF6;color:#274B73}.b-sec{background:#FBE7E7;color:#B4302F}.b-hip{background:#E7F3EF;color:#1E7A4E}.b-prod{background:#F3EAF7;color:#6D3B8E}.b-qa{background:#FBF3DD;color:#8A6D13}
+
+  /* ---- Phase blocks ---- */
+  .phase{border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-bottom:10px}
+  .phase .head{display:flex;align-items:center;gap:10px;padding:8px 12px;background:linear-gradient(90deg,var(--navy),#154a72);color:#fff}
+  .phase .head .no{background:var(--teal-2);color:#04262b;font-weight:900;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .phase .head .t{font-weight:800;font-size:12.5px}
+  .phase .head .dur{margin-inline-start:auto;font-size:10px;background:rgba(255,255,255,.16);padding:3px 9px;border-radius:20px;font-weight:600}
+  .phase .body{padding:8px 12px}
+  .phase .body li{font-size:10.8px;line-height:1.5}
+
+  /* ---- Cover ---- */
+  .cover{background:radial-gradient(1200px 600px at 80% -10%,#154a72 0%,#0B2A45 55%,#08213a 100%);color:#fff;height:297mm;position:relative;overflow:hidden}
+  .cover .mesh{position:absolute;inset:0;opacity:.5;background:
+    radial-gradient(500px 300px at 15% 90%,rgba(23,179,173,.28),transparent 60%),
+    radial-gradient(400px 260px at 90% 70%,rgba(18,166,160,.20),transparent 60%)}
+  .cover .grid-lines{position:absolute;inset:0;opacity:.09;background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:26px 26px}
+  .cover .inner{position:relative;height:100%;display:flex;flex-direction:column;padding:20mm 18mm}
+  .cover .topbar{display:flex;align-items:center;justify-content:space-between}
+  .logo-lz{display:flex;align-items:center;gap:11px}
+  .logo-lz .mark{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--teal-3),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#04262b;box-shadow:0 8px 24px rgba(23,179,173,.4)}
+  .logo-lz .nm{line-height:1.15}
+  .logo-lz .nm b{font-size:17px;font-weight:900;letter-spacing:.3px}
+  .logo-lz .nm span{font-size:11px;color:#9fc7cc;font-weight:500}
+  .cover .conf{font-size:10.5px;color:#9fc7cc;border:1px solid rgba(255,255,255,.22);padding:5px 12px;border-radius:20px}
+  .cover .mid{margin-top:auto;margin-bottom:auto}
+  .cover .eyebrow{font-size:12px;font-weight:800;color:var(--teal-3);letter-spacing:2px;margin-bottom:14px}
+  .cover h1{font-size:41px;font-weight:900;line-height:1.25;margin-bottom:16px;letter-spacing:-.5px}
+  .cover h1 .hl{color:var(--teal-3)}
+  .cover .sub{font-size:15px;color:#cfe0e6;line-height:1.9;max-width:150mm;font-weight:400}
+  .cover .chips{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+  .cover .chip{font-size:11.5px;font-weight:700;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#dff0f2;padding:7px 14px;border-radius:10px}
+  .cover .chip b{color:var(--teal-3)}
+  .cover .foot{border-top:1px solid rgba(255,255,255,.14);padding-top:16px;display:flex;justify-content:space-between;align-items:flex-end}
+  .cover .foot .who span{display:block}
+  .cover .foot .who .lbl{font-size:10px;color:#8fb4ba;margin-bottom:3px}
+  .cover .foot .who .val{font-size:14px;font-weight:800;color:#fff}
+  .cover .foot .meta{text-align:left;font-size:11px;color:#a9c6cb;line-height:1.9}
+
+  /* ---- Misc components ---- */
+  .callout{border-inline-start:4px solid var(--teal);background:var(--soft);border-radius:9px;padding:9px 13px;font-size:11.5px;line-height:1.7;margin:8px 0}
+  .callout.warn{border-color:var(--warn);background:#FDF6EA}
+  .callout.danger{border-color:var(--danger);background:#FCEDED}
+  .kpi{display:flex;gap:9px;margin:8px 0}
+  .kpi .k{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px;text-align:center;background:#fff}
+  .kpi .k .v{font-size:19px;font-weight:900;color:var(--teal)}
+  .kpi .k .l{font-size:9.5px;color:var(--muted);font-weight:600;margin-top:2px}
+
+  /* Timeline (roadmap overview) */
+  .tl{position:relative;margin:10px 4px}
+  .tl .row{display:flex;align-items:center;gap:10px;padding:6px 0}
+  .tl .row .n{width:22px;height:22px;border-radius:7px;background:var(--teal);color:#fff;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .tl .row .lbl{width:150px;font-size:11px;font-weight:700;color:var(--navy)}
+  .tl .row .bar{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--teal-2),var(--teal));position:relative}
+  .tl .row .d{font-size:9.5px;color:var(--muted);white-space:nowrap}
+
+  /* Architecture diagram */
+  .arch{border:1px solid var(--line);border-radius:11px;overflow:hidden;font-size:10.5px}
+  .arch .layer{padding:9px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+  .arch .layer:last-child{border-bottom:none}
+  .arch .layer .lb{font-size:9px;font-weight:800;color:#fff;padding:2px 8px;border-radius:5px;flex-shrink:0}
+  .arch .l1 .lb{background:#6D3B8E}.arch .l2 .lb{background:#274B73}.arch .l3 .lb{background:var(--teal)}.arch .l4 .lb{background:#1E7A4E}.arch .l5 .lb{background:#8A6D13}
+  .arch .layer .cnt{color:var(--text);line-height:1.5}
+  .arch .l3{background:var(--soft)}
+
+  @media print{
+    html,body{background:#fff;padding:0}
+    .helpbar{display:none}
+    .page{margin:0;box-shadow:none;page-break-after:always;break-after:page}
+    .page:last-child{page-break-after:auto;break-after:auto}
+    @page{size:A4;margin:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="helpbar">
+  <b>لطباعة PDF منظّم:</b> اضغط <span class="k">Ctrl</span> + <span class="k">P</span> ← اختر <b>Save as PDF</b> ·
+  الوجهة: A4 · الهوامش: <b>None / بلا</b> · فعّل خيار <b>Background graphics / رسوميات الخلفية</b> ليظهر التصميم بالألوان.
+  هذا الشريط لا يظهر في الطباعة.
+</div>
+
+<!-- ============ PAGE 1 — COVER ============ -->
+<section class="page pad0">
+  <div class="cover">
+    <div class="mesh"></div><div class="grid-lines"></div>
+    <div class="inner">
+      <div class="topbar">
+        <div class="logo-lz">
+          <div class="mark">N</div>
+          <div class="nm"><b>NuzulTech</b><span>حلول برمجية احترافية للمؤسسات</span></div>
+        </div>
+        <div class="conf">وثيقة استراتيجية — سرّية</div>
+      </div>
+
+      <div class="mid">
+        <div class="eyebrow">خطة تطوير وتحوّل رقمي</div>
+        <h1>تحويل منصة التذاكر إلى<br><span class="hl">منتج SaaS احترافي</span> للقطاع الصحي</h1>
+        <p class="sub">خارطة طريق متكاملة لتطوير وإكمال وإصلاح منصة إدارة التذاكر والدعم، وتحويلها من نظام داخلي أحادي المؤسسة إلى منتج سحابي متعدد المؤسسات، جاهز للتسويق للمستشفيات والمؤسسات مع امتثال صحي كامل.</p>
+        <div class="chips">
+          <div class="chip">☁️ <b>SaaS</b> متعدد المؤسسات</div>
+          <div class="chip">🏥 امتثال صحي <b>HIPAA-Grade</b></div>
+          <div class="chip">🔒 تعزيز أمني شامل</div>
+          <div class="chip">📈 جاهزية للتسويق</div>
+        </div>
+      </div>
+
+      <div class="foot">
+        <div class="who">
+          <span class="lbl">إعداد وتنفيذ</span>
+          <span class="val">خالد &nbsp;·&nbsp; NuzulTech</span>
+        </div>
+        <div class="meta">
+          الإصدار 1.0 — 23 يوليو 2026<br>
+          info@barmagly.tech
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAGE 2 — EXECUTIVE SUMMARY ============ -->
+<section class="page">
+  <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">الملخص التنفيذي</div></div>
+  <span class="kick">01 · نظرة عامة</span>
+  <h1 class="sec">الملخص التنفيذي والقرار الاستراتيجي</h1>
+
+  <p class="lead" style="margin-top:8px">المنصة الحالية <strong>نظام تذاكر ودعم داخلي ناضج تقنياً</strong> مبني على NestJS + React 19 + PostgreSQL، صُمّم لمؤسسة واحدة. البنية سليمة، والأمان المحيطي جيد، والميزات غنية — لكن لتحويله إلى منتج يُسوَّق للمستشفيات تنقصه ثلاث ركائز غير موجودة اليوم.</p>
+
+  <div class="kpi">
+    <div class="k"><div class="v">67</div><div class="l">ملف باك-إند</div></div>
+    <div class="k"><div class="v">30+</div><div class="l">جدول بيانات</div></div>
+    <div class="k"><div class="v">13</div><div class="l">موديول وظيفي</div></div>
+    <div class="k"><div class="v">2</div><div class="l">لغة (AR/EN)</div></div>
+  </div>
+
+  <h2 class="blk">الركائز الثلاث الناقصة</h2>
+  <div class="grid g3">
+    <div class="card soft"><h3><span class="num">1</span>عزل المؤسسات</h3><p>المنصة أحادية المستأجر بالكامل — لا يوجد مفهوم «مؤسسة/مستشفى» في قاعدة البيانات. العزل بالكود على مستوى القسم فقط.</p></div>
+    <div class="card soft"><h3><span class="num">2</span>الامتثال الصحي</h3><p>لا تشفير للبيانات الحساسة، ولا سجل تدقيق محكم، ولا سياسات احتفاظ — متطلبات إلزامية للمستشفيات.</p></div>
+    <div class="card soft"><h3><span class="num">3</span>الطبقة التجارية</h3><p>لا صفحة تسويقية، ولا تسجيل ذاتي، ولا اشتراكات/فوترة، ولا إدارة حسابات مؤسسية.</p></div>
+  </div>
+
+  <h2 class="blk">القرار الاستراتيجي المعتمد</h2>
+  <table>
+    <tr><th style="width:26%">البُعد</th><th style="width:37%">القرار</th><th>الأثر</th></tr>
+    <tr><td><strong>نموذج التشغيل</strong></td><td>SaaS متعدد المؤسسات (Multi-Tenant)</td><td>نشر واحد يخدم كل المستشفيات مع عزل كامل — الأمثل للتسويق والتوسّع</td></tr>
+    <tr><td><strong>الامتثال</strong></td><td>كامل (HIPAA-Grade)</td><td>تشفير + تدقيق محكم + احتفاظ — يفتح باب المستشفيات الكبيرة والحكومية</td></tr>
+    <tr><td><strong>التقنية</strong></td><td>الإبقاء على NestJS + React</td><td>لا إعادة كتابة — البناء على الأصول القائمة وتوفير أشهر عمل</td></tr>
+    <tr><td><strong>الأولوية</strong></td><td>خطة + بدء فوري بالإصلاحات الحرجة</td><td>مسارات متوازية: إصلاح أمني الآن + تحوّل معماري بالتوازي</td></tr>
+  </table>
+
+  <div class="callout"><strong>المسار الحرج نحو أول مستشفى قابل للبيع (MVP تجاري): 4–6 أشهر</strong> بفريق مركّز — مع بدء الإصلاحات الأمنية فوراً بالتوازي مع التخطيط.</div>
+</section>
+
+<!-- ============ PAGE 3 — STRENGTHS ============ -->
+<section class="page">
+  <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">تقييم الوضع الحالي</div></div>
+  <span class="kick">02 · الأساس القائم</span>
+  <h1 class="sec">نقاط القوة — نبني عليها ولا نلمسها</h1>
+  <p class="lead" style="margin-top:8px">تقييم مباشر للكود (لا اعتماد على تقارير سابقة) كشف أساساً هندسياً متيناً يستحق البناء عليه بدل إعادة الكتابة:</p>
+
+  <table style="margin-top:10px">
+    <tr><th style="width:28%">المجال</th><th>التقييم</th></tr>
+    <tr><td><strong>المعمارية</strong></td><td>NestJS modular نظيف، فصل واضح للمسؤوليات، Prisma بفهرسة مدروسة حسب أنماط الاستعلام الفعلية</td></tr>
+    <tr><td><strong>دورة حياة التذكرة</strong></td><td>آلة حالات (State Machine) موثّقة تفرض تأكيد المُنشئ قبل الإغلاق — من أفضل ما في الكود</td></tr>
+    <tr><td><strong>الأمان المحيطي</strong></td><td>JWT fail-fast · bcrypt cost 12 · قفل الحساب (5 محاولات/15 دقيقة) · Helmet + CSP + HSTS · CORS allowlist · CSRF · Throttler بـ6 طبقات</td></tr>
+    <tr><td><strong>رفع الملفات</strong></td><td>فحص الامتداد + MIME + magic-byte + منع path-traversal + حد 5MB (دفاع متعدد الطبقات)</td></tr>
+    <tr><td><strong>Real-time</strong></td><td>Socket.IO مع Redis adapter · إدارة اتصال صحيحة · rate limiting لكل حدث</td></tr>
+    <tr><td><strong>RBAC</strong></td><td>ثلاث طبقات: دور المستخدم ← صلاحيات القسم ← تجاوزات لكل مستخدم (13 صلاحية دقيقة)</td></tr>
+    <tr><td><strong>الواجهة (UI)</strong></td><td>تصميم متماسك · Dark mode · ثنائي اللغة AR/EN + RTL · responsive · React Query</td></tr>
+    <tr><td><strong>التوثيق</strong></td><td>توثيق ضخم: 54 endpoint · ER diagram · أدلة لكل دور · تقارير تدقيق</td></tr>
+  </table>
+
+  <div class="callout" style="margin-top:12px"><strong>حقيقة مُتحقَّق منها:</strong> الباك-إند <strong>يُبنى بنجاح</strong> (اختبار مباشر — exit 0)، وحِزم <span style="font-family:monospace">zod</span> و<span style="font-family:monospace">csrf-csrf</span> موجودة. ادّعاء «الـ build مكسور» في أحد التقارير السابقة <strong>غير صحيح</strong> — وهذا يؤكد أهمية التحقق المباشر قبل أي قرار.</div>
+
+  <h2 class="blk">الخلاصة</h2>
+  <p class="lead">النظام <strong>مبنيّ جيداً في جوهره</strong>؛ ما يفصله عن الاحترافية التجارية ليس عيوباً معمارية بل <strong>إضافات وميزات ناقصة</strong> — وهذا يجعل الاستثمار في التطوير أعلى عائداً بكثير من إعادة البناء من الصفر.</p>
+</section>
+
+<!-- ============ PAGE 4 — GAPS (arch + compliance) ============ -->
+<section class="page">
+  <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">الفجوات الحرجة (1/2)</div></div>
+  <span class="kick">03 · ما الذي ينقص</span>
+  <h1 class="sec">الفجوات الحرجة — المعمارية والامتثال</h1>
+
+  <h2 class="blk"><span class="badge b-arch">معمارية</span> بنية النظام</h2>
+  <div class="grid g2">
+    <div class="card"><h3>أحادي المستأجر بالكامل</h3><p>لا يوجد كيان <strong>Organization/Tenant</strong>. العزل بالكود على مستوى القسم فقط — أخطر عائق أمام تسويق المنصة لعدة مستشفيات.</p></div>
+    <div class="card"><h3>لا Row-Level Security</h3><p>لا حماية على مستوى قاعدة البيانات ضد تسرّب البيانات بين المؤسسات — دفاع واحد فقط بدل طبقات.</p></div>
+    <div class="card"><h3>توجيه الواجهة يدوي</h3><p><span style="font-family:monospace">App.tsx</span> يستخدم <span style="font-family:monospace">useState</span> بدل <span style="font-family:monospace">react-router</span> (مثبّت وغير مُستخدم) — لا روابط عميقة ولا حماية مسارات حقيقية.</p></div>
+    <div class="card"><h3>خدمة ضخمة (God Service)</h3><p><span style="font-family:monospace">tickets.service.ts</span> يتجاوز 1000 سطر — دَين تقني يصعّب الصيانة والتوسّع.</p></div>
+  </div>
+
+  <h2 class="blk"><span class="badge b-hip">امتثال</span> الجاهزية الصحية (Healthcare / HIPAA)</h2>
+  <div class="grid g2">
+    <div class="card"><h3>لا تشفير للبيانات الحساسة</h3><p>الأسماء والهواتف والملاحظات (PHI/PII) مخزّنة نصاً صريحاً — غير مقبول لبيانات المرضى.</p></div>
+    <div class="card"><h3>سجل تدقيق غير محكم</h3><p>أعمدة <span style="font-family:monospace">ipAddress/userAgent</span> موجودة لكن لا تُملأ أبداً؛ الكتابة يدوية متناثرة وغير tamper-evident.</p></div>
+    <div class="card"><h3>تخزين ملفات محلي غير مشفّر</h3><p>لا S3/object storage، لا فحص فيروسات، لا تشفير — مشكلة كبيرة لبيانات المرضى وقابلية التوسّع.</p></div>
+    <div class="card"><h3>لا احتفاظ ولا نسخ احتياطي</h3><p>لا سياسات retention/erasure، لا نسخ احتياطي أو DR في الريبو — متطلبات امتثال أساسية.</p></div>
+  </div>
+
+  <div class="callout warn" style="margin-top:10px"><strong>الأثر:</strong> هاتان المجموعتان تمثّلان <strong>بوّابة الدخول للقطاع الصحي</strong> — لا يمكن التعاقد مع مستشفى دون عزل مؤسسات موثوق وضوابط حماية بيانات المرضى.</div>
+</section>
+
+<!-- ============ PAGE 5 — GAPS (security + product + quality) ============ -->
+<section class="page">
+  <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">الفجوات الحرجة (2/2)</div></div>
+  <span class="kick">03 · ما الذي ينقص</span>
+  <h1 class="sec">الفجوات الحرجة — الأمان والمنتج والجودة</h1>
+
+  <h2 class="blk"><span class="badge b-sec">أمان</span> أولوية فورية</h2>
+  <div class="grid g2">
+    <div class="card"><h3>الخروج لا يُبطل التوكن</h3><p>refresh token صالح 7 أيام حتى بعد الخروج — لا blacklist ولا rotation. نافذة خطر عند سرقة التوكن.</p></div>
+    <div class="card"><h3>تحقّق مدخلات ناقص</h3><p>التحقق (Zod) على endpoint واحد من ~54؛ الباقي <span style="font-family:monospace">body: any</span> — سطح هجوم واسع.</p></div>
+    <div class="card"><h3>تسريب صلاحيات بالتحليلات</h3><p><span style="font-family:monospace">getDepartmentPerformance()</span> يتجاهل معاملاته فالمشرف يرى كل الأقسام.</p></div>
+    <div class="card"><h3>لا إدارة ذاتية لكلمة المرور</h3><p>لا endpoint لتغيير/استرجاع كلمة المرور رغم وجود flag <span style="font-family:monospace">forcePasswordChange</span>.</p></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:11px">
+    <div>
+      <h2 class="blk" style="margin-top:2px"><span class="badge b-prod">منتج</span> الطبقة التجارية</h2>
+      <ul class="x clean">
+        <li>لا صفحة هبوط/تسويق ولا تسجيل ذاتي ولا onboarding</li>
+        <li>لا اشتراكات/فوترة/خطط ولا إدارة حساب مؤسسي</li>
+        <li>لا بريد إلكتروني/SMS (إشعارات push فقط) — ضروري للتنبيهات والاسترجاع</li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="blk" style="margin-top:2px"><span class="badge b-qa">جودة</span> الدَّين التقني</h2>
+      <ul class="x clean">
+        <li>صفر اختبارات فعلية رغم تهيئة Vitest كاملة</li>
+        <li><span style="font-family:monospace">any</span> منتشر (~146 backend / ~107 frontend) + <span style="font-family:monospace">strict:false</span></li>
+        <li>لا CI/CD ولا ESLint/Prettier ولا logging مُهيكل ولا metrics/APM</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout danger" style="margin-top:12px"><strong>تنبيه أمني مُصلَح بالفعل:</strong> كانت هناك أسرار مكتوبة داخل <span style="font-family:monospace">docker-compose.yml</span> (كلمة مرور DB + أسرار JWT). تمّ <strong>إخراجها إلى <span style="font-family:monospace">.env</span></strong> وإنشاء <span style="font-family:monospace">.env.example</span> كجزء من الإصلاحات الفورية (المرحلة 0).</div>
+</section>
+
+<!-- ============ PAGE 6 — ROADMAP OVERVIEW + PHASE 0 ============ -->
+<section class="page">
+  <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">خارطة الطريق</div></div>
+  <span class="kick">04 · خطة التنفيذ</span>
+  <h1 class="sec">خارطة الطريق — نظرة عامة</h1>
+  <p class="lead" style="margin-top:6px">ست مراحل متوازية جزئياً. تبدأ المرحلة 0 (الأمان) <strong>فوراً</strong> بالتوازي مع 1 و2 لتقصير الزمن للسوق.</p>
+
+  <div class="tl">
+    <div class="row"><div class="n">0</div><div class="lbl">تثبيت وأمان فوري</div><div class="bar" style="width:11%"></div><div class="d">أسبوعان</div></div>
+    <div class="row"><div class="n">1</div><div class="lbl">Multi-Tenancy</div><div class="bar" style="width:34%"></div><div class="d">4–6 أسابيع</div></div>
+    <div class="row"><div class="n">2</div><div class="lbl">امتثال صحي</div><div class="bar" style="width:34%"></div><div class="d">4–6 أسابيع</div></div>
+    <div class="row"><div class="n">3</div><div class="lbl">طبقة SaaS</div><div class="bar" style="width:34%"></div><div class="d">4–6 أسابيع</div></div>
+    <div class="row"><div class="n">4</div><div class="lbl">جودة ومراقبة</div><div class="bar" style="width:70%"></div><div class="d">مستمر</div></div>
+    <div class="row"><div class="n">5</div><div class="lbl">إطلاق وتسويق</div><div class="bar" style="width:16%"></div><div class="d">2–3 أسابيع</div></div>
+  </div>
+
+  <div class="phase" style="margin-top:12px">
+    <div class="head"><div class="no">0</div><div class="t">التثبيت والأمان الفوري — Stabilize &amp; Secure</div><div class="dur">أسبوعان · يبدأ فوراً</div></div>
+    <div class="body">
+      <div class="grid g2">
+        <ul class="check clean">
+          <li>إخراج الأسرار من <span style="font-family:monospace">docker-compose</span> ← <span style="font-family:monospace">.env</span> + <span style="font-family:monospace">.env.example</span></li>
+          <li>إبطال refresh token عند الخروج (blacklist + rotation + <span style="font-family:monospace">jti</span>)</li>
+          <li>تطبيق Zod validation على كل الـmutation endpoints</li>
+          <li>تغيير/استرجاع كلمة المرور ذاتياً + تفعيل <span style="font-family:monospace">forcePasswordChange</span></li>
+        </ul>
+        <ul class="check clean">
+          <li>إصلاح تسريب صلاحيات <span style="font-family:monospace">getDepartmentPerformance()</span></li>
+          <li>التقاط IP/UserAgent في كل كتابات التدقيق</li>
+          <li>إعداد CI/CD (lint + test + build) + ESLint/Prettier</li>
+          <li>تفعيل <span style="font-family:monospace">strict</span> تدريجياً + حذف الكود الميت</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="callout"><strong>الهدف:</strong> إغلاق كل الثغرات الأمنية الحرجة وتأسيس بوابات الجودة <strong>قبل</strong> أي توسّع معماري — أساس نظيف نبني عليه بقية المراحل.</div>
+</section>
+
+<!-- ============ PAGE 7 — PHASE 1 + 2 ============ -->
+<section class="page">
+  <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">خارطة الطريق</div></div>
+  <span class="kick">04 · خطة التنفيذ</span>
+  <h1 class="sec">المرحلتان 1 و2 — التحوّل الأساسي</h1>
+
+  <div class="phase" style="margin-top:10px">
+    <div class="head"><div class="no">1</div><div class="t">التحوّل متعدد المؤسسات — Multi-Tenancy</div><div class="dur">4–6 أسابيع</div></div>
+    <div class="body">
+      <p style="font-size:10.8px;color:var(--muted);margin-bottom:5px">الهدف: كل مؤسسة معزولة تماماً؛ نشر واحد يخدم الجميع.</p>
+      <div class="grid g2">
+        <ul class="clean">
+          <li>نموذج <strong>Organization</strong> + العضويات + خطة/حالة الاشتراك</li>
+          <li>إضافة <span style="font-family:monospace">organizationId</span> لكل الجداول + Migration + backfill</li>
+          <li>حلّ المستأجر: subdomain و/أو claim في JWT</li>
+        </ul>
+        <ul class="clean">
+          <li><strong>Prisma extension</strong> يحقن <span style="font-family:monospace">tenantId</span> تلقائياً بكل استعلام</li>
+          <li><strong>PostgreSQL RLS</strong> كطبقة دفاع ثانية على مستوى القاعدة</li>
+          <li>فصل Platform Admin عن Tenant Admin + onboarding + <strong>اختبارات عزل صارمة</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="head"><div class="no">2</div><div class="t">الامتثال الصحي — Healthcare &amp; HIPAA</div><div class="dur">4–6 أسابيع</div></div>
+    <div class="body">
+      <p style="font-size:10.8px;color:var(--muted);margin-bottom:5px">الهدف: جاهزية للتعامل مع بيانات المستشفيات ومعلومات المرضى.</p>
+      <div class="grid g2">
+        <ul class="clean">
+          <li><strong>تشفير الحقول الحساسة</strong> (PHI/PII) at rest عبر Prisma middleware</li>
+          <li><strong>سجل تدقيق محكم</strong>: append-only + hash-chain + IP/UA/tenant</li>
+          <li>سياسات الاحتفاظ والحذف (retention &amp; erasure) + مهام cron للتطهير</li>
+          <li>انتهاء الجلسة بالخمول + إعادة مصادقة للعمليات الحساسة</li>
+        </ul>
+        <ul class="clean">
+          <li><strong>تخزين آمن</strong>: S3/MinIO + تشفير + URLs موقّعة + فحص فيروسات (ClamAV)</li>
+          <li>نسخ احتياطي مشفّر آلي + خطة DR موثّقة واختبار استعادة</li>
+          <li>ميزات طبية: تصنيفات/أولويات، حقول مخصّصة، قوالب تذاكر</li>
+          <li>(متقدم) خطاف تكامل <strong>HL7/FHIR</strong> مع أنظمة HIS/EMR + ورقة امتثال</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout"><strong>ترتيب مقصود:</strong> المرحلة 1 تُنشئ حدود المؤسسة، والمرحلة 2 تحمي البيانات داخل تلك الحدود — لا معنى للتشفير والتدقيق دون عزل موثوق أولاً.</div>
+</section>
+
+<!-- ============ PAGE 8 — PHASE 3 + 4 + 5 ============ -->
+<section class="page">
+  <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">خارطة الطريق</div></div>
+  <span class="kick">04 · خطة التنفيذ</span>
+  <h1 class="sec">المراحل 3 و4 و5 — المنتج والجودة والإطلاق</h1>
+
+  <div class="phase" style="margin-top:8px">
+    <div class="head"><div class="no">3</div><div class="t">طبقة المنتج التجاري — SaaS Productization</div><div class="dur">4–6 أسابيع</div></div>
+    <div class="body"><div class="grid g2">
+      <ul class="clean">
+        <li>إعادة بناء التوجيه بـ<span style="font-family:monospace">react-router</span> (روابط + حماية مسارات)</li>
+        <li>صفحة هبوط/تسويق احترافية ثنائية اللغة</li>
+        <li>تسجيل ذاتي + Onboarding + تأكيد بريد + معالج بدء</li>
+      </ul>
+      <ul class="clean">
+        <li>الفوترة والاشتراكات (Stripe/Paddle): خطط، حدود، تجربة، فواتير</li>
+        <li>إدارة الحساب + العلامة التجارية لكل مؤسسة (white-label)</li>
+        <li>البريد وSMS (SendGrid/SES + Twilio) للتنبيهات والاسترجاع</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="phase">
+    <div class="head"><div class="no">4</div><div class="t">الجودة والمراقبة — Quality &amp; Observability</div><div class="dur">مستمر / بالتوازي</div></div>
+    <div class="body"><div class="grid g2">
+      <ul class="clean">
+        <li>اختبارات: backend + frontend + E2E (Playwright) + عزل المؤسسات</li>
+        <li>رفع التغطية نحو 80% وفرضها في CI</li>
+        <li>Logging مُهيكل (pino) + correlation IDs + tenant context</li>
+      </ul>
+      <ul class="clean">
+        <li>Metrics + APM (OpenTelemetry) + لوحات مراقبة</li>
+        <li>Health liveness/readiness + Redis/queue + تنبيهات</li>
+        <li>الأداء + الوصولية (WCAG) + تنظيف الدَّين التقني</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="phase">
+    <div class="head"><div class="no">5</div><div class="t">التمكين التسويقي والإطلاق — Go-To-Market</div><div class="dur">2–3 أسابيع</div></div>
+    <div class="body"><div class="grid g2">
+      <ul class="clean">
+        <li>بيئة عرض/تجربة (Demo/Sandbox) ببيانات مستشفى واقعية</li>
+        <li>مواد تسويقية: عروض، دراسات حالة، ورقة أمان، مقارنة منافسين</li>
+      </ul>
+      <ul class="clean">
+        <li>بنية سحابية (IaC) + نشر إنتاجي + مراقبة + SLA/uptime</li>
+        <li>توثيق العميل + مركز مساعدة + قياس النجاح (تفعيل/احتفاظ/CSAT)</li>
+      </ul>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ PAGE 9 — IMMEDIATE FIXES + ARCH ============ -->
+<section class="page">
+  <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">التنفيذ الفوري</div></div>
+  <span class="kick">05 · نبدأ الآن</span>
+  <h1 class="sec">الإصلاحات الحرجة الفورية والبنية المستهدفة</h1>
+
+  <h2 class="blk">الإصلاحات الحرجة (تبدأ الآن — معظمها ساعات لا أسابيع)</h2>
+  <table>
+    <tr><th style="width:6%">#</th><th style="width:44%">الإصلاح</th><th style="width:32%">الموضع</th><th>الأولوية</th></tr>
+    <tr><td>1</td><td>إخراج الأسرار من docker-compose + <span style="font-family:monospace">.env.example</span></td><td><span style="font-family:monospace">docker-compose.yml</span></td><td><span class="tag-c c-grn">مُنجَز ✓</span></td></tr>
+    <tr><td>2</td><td>إبطال refresh token عند الخروج (blacklist + rotation)</td><td><span style="font-family:monospace">auth.service.ts</span></td><td><span class="tag-c c-red">فوري</span></td></tr>
+    <tr><td>3</td><td>Zod validation لكل الـendpoints</td><td>كل الـcontrollers</td><td><span class="tag-c c-red">عالٍ</span></td></tr>
+    <tr><td>4</td><td>تغيير/استرجاع كلمة المرور ذاتياً</td><td><span style="font-family:monospace">auth.*</span> + واجهة</td><td><span class="tag-c c-red">عالٍ</span></td></tr>
+    <tr><td>5</td><td>إصلاح تسريب <span style="font-family:monospace">getDepartmentPerformance()</span></td><td><span style="font-family:monospace">analytics.service.ts</span></td><td><span class="tag-c c-org">متوسط</span></td></tr>
+    <tr><td>6</td><td>التقاط IP/UserAgent في التدقيق</td><td><span style="font-family:monospace">mutation-logger</span></td><td><span class="tag-c c-org">متوسط</span></td></tr>
+    <tr><td>7</td><td>CI/CD + ESLint/Prettier</td><td><span style="font-family:monospace">.github/workflows</span></td><td><span class="tag-c c-org">متوسط</span></td></tr>
+    <tr><td>8</td><td>حذف الكود الميت + strict TS تدريجي</td><td>متعدد</td><td><span class="tag-c c-yel">منخفض</span></td></tr>
+  </table>
+
+  <h2 class="blk">البنية المستهدفة (Target Architecture)</h2>
+  <div class="arch">
+    <div class="layer l1"><span class="lb">عام</span><span class="cnt">صفحة هبوط · تسجيل ذاتي · تسويق &nbsp;(react-router)</span></div>
+    <div class="layer l2"><span class="lb">تطبيق</span><span class="cnt">تطبيق المؤسسة لكل subdomain · لوحة إدارة المنصة (Platform Admin)</span></div>
+    <div class="layer l3"><span class="lb">API</span><span class="cnt">NestJS · Tenant Middleware ← RLS ← Prisma extension · Auth (jti + rotation + blacklist) · Billing · Email/SMS · Encryption</span></div>
+    <div class="layer l4"><span class="lb">بيانات</span><span class="cnt">PostgreSQL (RLS + tenantId) · Redis · S3/MinIO (تشفير + فحص فيروسات)</span></div>
+    <div class="layer l5"><span class="lb">مراقبة</span><span class="cnt">OpenTelemetry · pino · Metrics · Health checks</span></div>
+  </div>
+</section>
+
+<!-- ============ PAGE 10 — RISKS + TIMELINE + TEAM ============ -->
+<section class="page">
+  <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">الإدارة والمخاطر</div></div>
+  <span class="kick">06 · الحوكمة</span>
+  <h1 class="sec">المخاطر والجدول الزمني والفريق</h1>
+
+  <h2 class="blk">المخاطر والتخفيف</h2>
+  <table>
+    <tr><th style="width:42%">الخطر</th><th>التخفيف</th></tr>
+    <tr><td><strong>تسرّب بيانات بين المؤسسات</strong> (الأخطر)</td><td>دفاع متعدد الطبقات: Prisma extension + RLS + اختبارات عزل آلية في CI</td></tr>
+    <tr><td>الامتثال الصحي معقّد وطويل</td><td>البدء بالضوابط التقنية الأساسية، والامتثال القانوني/BAA بالتوازي مع مستشار</td></tr>
+    <tr><td>تعطّل الميزات الحالية أثناء التحوّل</td><td>فروع منفصلة + اختبارات + نشر تدريجي عبر feature flags</td></tr>
+    <tr><td>زحف النطاق (Scope Creep)</td><td>التزام صارم بترتيب المراحل؛ MVP قابل للبيع أولاً ثم التوسّع</td></tr>
+    <tr><td>الأداء تحت الحمل متعدد المؤسسات</td><td>فهرسة على <span style="font-family:monospace">organizationId</span> + caching + اختبار حمل</td></tr>
+  </table>
+
+  <div class="grid g2" style="margin-top:6px">
+    <div>
+      <h2 class="blk">الجدول الزمني</h2>
+      <table>
+        <tr><th>المرحلة</th><th>المدة</th></tr>
+        <tr><td>0 — أمان وتثبيت</td><td>أسبوعان</td></tr>
+        <tr><td>1 — Multi-tenancy</td><td>4–6 أسابيع</td></tr>
+        <tr><td>2 — امتثال صحي</td><td>4–6 أسابيع</td></tr>
+        <tr><td>3 — طبقة SaaS</td><td>4–6 أسابيع</td></tr>
+        <tr><td>4 — جودة/مراقبة</td><td>مستمر</td></tr>
+        <tr><td>5 — إطلاق</td><td>2–3 أسابيع</td></tr>
+      </table>
+    </div>
+    <div>
+      <h2 class="blk">الفريق المقترح</h2>
+      <ul class="clean">
+        <li>2 مطوّر Backend (NestJS/Prisma)</li>
+        <li>1–2 مطوّر Frontend (React)</li>
+        <li>1 DevOps/أمان (دوام جزئي)</li>
+        <li>1 ضمان جودة (QA)</li>
+        <li>مستشار امتثال صحي (استشاري)</li>
+      </ul>
+      <div class="callout" style="margin-top:4px"><strong>الزمن للسوق:</strong> 4–6 أشهر لأول مستشفى قابل للبيع.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAGE 11 — METRICS + NEXT + BACK COVER ============ -->
+<section class="page pad0">
+  <div style="height:118mm;background:#fff;padding:var(--page-pad-y) var(--page-pad-x) 0">
+    <div class="rh"><div class="brand"><span class="dot"></span>NuzulTech — خطة تطوير المنصة</div><div class="tag">الخلاصة</div></div>
+    <span class="kick">07 · النجاح والخطوة التالية</span>
+    <h1 class="sec">مؤشرات النجاح والخطوة التالية</h1>
+
+    <h2 class="blk">مؤشرات النجاح</h2>
+    <div class="grid g3">
+      <div class="card soft"><h3>تقني</h3><ul class="clean" style="margin:0"><li style="font-size:10.5px">تغطية ≥ 80%</li><li style="font-size:10.5px">صفر ثغرات حرجة</li><li style="font-size:10.5px">عزل 100% في الاختبارات</li></ul></div>
+      <div class="card soft"><h3>منتج</h3><ul class="clean" style="margin:0"><li style="font-size:10.5px">onboarding &lt; 15 دقيقة</li><li style="font-size:10.5px">uptime ≥ 99.9%</li></ul></div>
+      <div class="card soft"><h3>تجاري</h3><ul class="clean" style="margin:0"><li style="font-size:10.5px">أول مستشفى تجريبي</li><li style="font-size:10.5px">أول عميل مدفوع</li><li style="font-size:10.5px">CSAT مرتفع</li></ul></div>
+    </div>
+
+    <h2 class="blk">الخطوة التالية الفورية</h2>
+    <ul class="check clean">
+      <li>اعتماد هذه الخطة وترتيب الأولويات</li>
+      <li>البدء بالمرحلة 0 (الإصلاحات الأمنية) — <strong>جارٍ التنفيذ فعلاً</strong></li>
+      <li>تصميم نموذج بيانات المؤسسات (Multi-tenancy Schema) للمراجعة قبل الـMigration</li>
+    </ul>
+  </div>
+
+  <!-- back cover band -->
+  <div style="height:179mm;background:radial-gradient(900px 500px at 80% 20%,#154a72,#0B2A45 60%,#08213a);color:#fff;position:relative;overflow:hidden;padding:26mm 18mm">
+    <div style="position:absolute;inset:0;opacity:.08;background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:26px 26px"></div>
+    <div style="position:relative">
+      <div class="logo-lz" style="margin-bottom:26px">
+        <div class="mark">N</div>
+        <div class="nm"><b style="font-size:19px">NuzulTech</b><span style="font-size:11.5px">حلول برمجية احترافية للمؤسسات</span></div>
+      </div>
+      <div style="font-size:22px;font-weight:900;line-height:1.6;max-width:150mm">نحوّل الأنظمة الداخلية إلى<br><span style="color:var(--teal-3)">منتجات سحابية احترافية</span> جاهزة للسوق.</div>
+      <p style="color:#bcd6db;font-size:12.5px;line-height:2;margin-top:18px;max-width:150mm">هذه الوثيقة خارطة طريق قابلة للتنفيذ، مبنية على تحليل مباشر للكود وتدقيق مستقل للتقارير القائمة — لا افتراضات. كل مرحلة قابلة للقياس والمتابعة، مع بدء الإصلاحات الحرجة فوراً.</p>
+
+      <div style="margin-top:40px;border-top:1px solid rgba(255,255,255,.16);padding-top:20px;display:flex;justify-content:space-between;align-items:flex-end">
+        <div>
+          <div style="font-size:10.5px;color:#8fb4ba;margin-bottom:4px">إعداد وتنفيذ</div>
+          <div style="font-size:16px;font-weight:800">خالد &nbsp;·&nbsp; NuzulTech</div>
+        </div>
+        <div style="text-align:left;font-size:11.5px;color:#a9c6cb;line-height:2">
+          info@barmagly.tech<br>
+          <span style="color:#7fa6ac">الإصدار 1.0 — يوليو 2026</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

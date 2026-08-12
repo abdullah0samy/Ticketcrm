@@ -1,0 +1,98 @@
+# ============================================================================
+#  NuzulTech — ABC Hospital systems monorepo
+#  This repository is PUBLIC. Anything listed here must never be committed.
+# ============================================================================
+
+# --- Secrets ---------------------------------------------------------------
+# Real values live only on the machine that runs the service. Every project
+# ships a .env.example instead.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Firebase Admin service account: contains an RSA private key that grants full
+# access to the project's push notifications and storage.
+ticketingcrm.json
+*firebase*adminsdk*.json
+*service-account*.json
+
+# Server and production access notes (SSH root password, live logins).
+T.S & PR.S & PR.txt
+*credentials*.txt
+handover/
+
+# --- Local infrastructure --------------------------------------------------
+# Portable PostgreSQL + Redis and, critically, the live PostgreSQL data
+# directory. Never delete this folder on disk — it is only excluded from git.
+.local-dev/
+
+# --- Dependencies ----------------------------------------------------------
+node_modules/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pnpm-store/
+
+# --- Build output ----------------------------------------------------------
+build/
+dist/
+.vite/
+.next/
+out/
+*.tsbuildinfo
+staticfiles/
+static_root/
+
+# --- Databases and dumps ---------------------------------------------------
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+
+# --- User-uploaded media ---------------------------------------------------
+# Ticket attachments, chat uploads and profile photos. These are real
+# operational data and may contain patient-identifying screenshots.
+media/
+uploads/
+!media/.gitkeep
+
+# --- Logs and temp ---------------------------------------------------------
+*.log
+logs/
+tmp/
+temp/
+.cache/
+coverage/
+.nyc_output/
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Editor / OS -----------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.swp
+*~
+.vscode/*
+!.vscode/extensions.json
+
+# --- Misc ------------------------------------------------------------------
+*.bak
+*.orig
+package-lock.json.bak
+
+# Original per-project git history for ticket-crm and abc-pr, set aside so the
+# folders commit as plain directories here instead of as submodule pointers.
+# Rename back to `.git` to push to their own remotes again.
+.git-original/
+
