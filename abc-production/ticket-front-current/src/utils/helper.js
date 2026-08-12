@@ -13,12 +13,16 @@ export const columnStyle = (style) => {
 /**
  * A person's display name.
  *
- * Defaults to an empty object: history rows keep a null `user` once the account
- * that made the change is deleted (and system-generated entries never had one),
- * and destructuring that null threw, taking the whole History tab down instead
- * of showing "unknown" for a single row.
+ * History rows keep a null `history_user` once the account that made the change
+ * is deleted, and system-generated entries never had one. Destructuring that
+ * null threw and took the whole History tab down instead of showing "unknown"
+ * for the one row.
+ *
+ * Note this cannot be written as a defaulted parameter: a default only applies
+ * to `undefined`, so `getFullName(null)` would still throw.
  */
-export const getFullName = ({ first_name, last_name } = {}) => {
+export const getFullName = (user) => {
+  const { first_name, last_name } = user || {};
   const name = [first_name, last_name].filter(Boolean).join(" ").trim();
   return name || t("unknown");
 };

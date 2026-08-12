@@ -31,7 +31,9 @@ export default function TicketDetailsModal({
   const [selected, setSelected] = useState("details");
   const dispatch = useDispatch();
   const details = useSelector((state) => state.ticketProfile.details);
-  const { sendSocket } = useContext(webSocketContext);
+  // The context defaults to null, so destructuring it directly throws whenever
+  // the modal renders outside the provider.
+  const { sendSocket } = useContext(webSocketContext) ?? {};
 
   const ticket = details.results ?? {};
   const attachmentsCount = ticket.images?.length ?? 0;
@@ -47,9 +49,14 @@ export default function TicketDetailsModal({
   }, [ticketId]);
 
   const onSelectionChange = (selectedKey) => {
-    setSelected((current) => {
-      // leave chat
-      if (current === "chat" && selectedKey !== "chat") {
+    // The join/leave messages used to be sent from inside the setSelected
+    // updater. A state updater must be pure — React may call it more than once
+    // — and worse, if the socket had already closed, `sendSocket` threw from
+    // inside the update and took the whole dialog down with it. Leaving the
+    // chat tab is exactly when that happens, so switching to History unmounted
+    // the modal instead of showing the history.
+    try {
+      if (selected === "chat" && selectedKey !== "chat") {
         sendSocket({
           action: "leave_ticket",
           request_id: Math.random(),
@@ -63,8 +70,10 @@ export default function TicketDetailsModal({
           pk: ticketId,
         });
       }
-      return selectedKey;
-    });
+    } catch {
+      // A dropped socket only costs live updates; the tab must still open.
+    }
+    setSelected(selectedKey);
   };
 
   const copyId = async () => {
