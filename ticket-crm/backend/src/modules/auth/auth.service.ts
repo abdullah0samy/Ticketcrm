@@ -1,8 +1,35 @@
 import { Injectable, Inject, UnauthorizedException, ForbiddenException, BadRequestException, HttpException, Logger } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from './auth.utils';
 import { RefreshTokenStore } from './refresh-token.store';
+
+function verifyDjangoPassword(password: string, djangoHash: string): boolean {
+  try {
+    const parts = djangoHash.split('$');
+
+    if (parts.length !== 4 || parts[0] !== 'pbkdf2_sha256') {
+      return false;
+    }
+
+    const iterations = parseInt(parts[1], 10);
+    const salt = parts[2];
+    const expectedHash = parts[3];
+
+    if (!Number.isInteger(iterations) || !salt || !expectedHash) {
+      return false;
+    }
+
+    const derived = crypto
+      .pbkdf2Sync(password, salt, iterations, 32, 'sha256')
+      .toString('base64');
+
+    return derived === expectedHash;
+  } catch {
+    return false;
+  }
+}
 
 @Injectable()
 export class AuthService {
@@ -54,7 +81,22 @@ export class AuthService {
       });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    let isPasswordValid = false;
+
+    if (user.passwordHash.startsWith('pbkdf2_sha256$')) {
+      isPasswordValid = verifyDjangoPassword(password, user.passwordHash);
+
+      if (isPasswordValid) {
+        const newBcryptHash = await bcrypt.hash(password, 10);
+
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { passwordHash: newBcryptHash },
+        });
+      }
+    } else {
+      isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    }
 
     if (!isPasswordValid) {
       const newAttempts = (user.failedLoginAttempts || 0) + 1;
