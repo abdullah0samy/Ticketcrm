@@ -20,8 +20,7 @@ COPY --from=builder /app/package.json ./
 COPY --from=builder /app/prisma ./prisma
 
 # تثبيت الحزم الإنتاجية
-#RUN npm ci --omit=dev
-RUN npm ci --include=dev
+RUN npm ci --omit=dev
 
 # نسخ الـ Prisma Client المولد من مرحلة البناء لضمان استقرار الاتصال بقاعدة البيانات
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
