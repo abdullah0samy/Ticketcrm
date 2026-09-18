@@ -17,7 +17,6 @@ import { TicketsModule } from './modules/tickets/tickets.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { AuditModule } from './modules/audit/audit.module';
-import { UploadsModule } from './modules/uploads/uploads.module';
 import { AssetsModule } from './modules/assets/assets.module';
 import { TeamNotesModule } from './modules/team-notes/team-notes.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
