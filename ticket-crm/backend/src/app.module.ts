@@ -57,7 +57,6 @@ import { GatewaysModule } from './gateways/gateways.module';
     AnalyticsModule,
     ProfileModule,
     AuditModule,
-    UploadsModule,
     AssetsModule,
     TeamNotesModule,
     KnowledgeModule,
