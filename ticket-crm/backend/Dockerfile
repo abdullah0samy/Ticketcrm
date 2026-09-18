@@ -31,7 +31,4 @@ ENV NODE_ENV=production
 ENV PORT=4000
 ENV NEST_PORT=4000
 
-HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
-  CMD wget -qO- http://localhost:4000/api/health || exit 1
-
 CMD ["node", "dist/main"]
