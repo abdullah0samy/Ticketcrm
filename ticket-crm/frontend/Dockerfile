@@ -8,7 +8,7 @@ RUN npm ci
 COPY . .
 
 # القيمة الافتراضية للمسار الخلفي الموحد
-ARG VITE_API_BASE=/api
+ARG VITE_API_BASE=""
 ENV VITE_API_BASE=${VITE_API_BASE}
 
 RUN npm run build
